@@ -1,10 +1,11 @@
 <%- include('../partials/header', {title: `Modifier ${targetUser.email}`}) -%>
     <br/>
     <br/>
+
     
-    <form method="POST" action="/admin/users/<%=targetUser.id%>/delete">
+    <form class="deleteForm" method="POST" action="/admin/users/<%=targetUser.id%>/delete">
         <label for="delete" style="color: red;">Supprimer</label>
-        <input type="submit" name="delete" id="delete" value="delete" hidden>
+        <input type="submit" id="delete" value="delete" hidden>
     </form>
     <br/>
     <br/>
@@ -34,4 +35,6 @@
         </div>
         
     </form>
+
+    <script src="/js/delete.js"></script>
 <%- include('../partials/footer') -%>

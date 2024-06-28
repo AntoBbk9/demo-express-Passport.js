@@ -105,7 +105,7 @@ passport.deserializeUser(function (user, cb) {
   });
 });
 
-app.get("/", (req, res) => {
+app.get("/", ensureAuthenticated,(req, res) => {
   res.render("index", { title: "Home Page", user: req.user });
 });
 
@@ -155,6 +155,7 @@ app.get("/auth/admin/users", ensureAdmin, (req, res) => {
 app.get("/auth/admin/users/:targetUserId", ensureAdmin, (req, res) => {
   const { targetUserId } = req.params;
   const targetUser = users.find((user) => user.id === targetUserId);
+  
   if (targetUser) {
     return res.render("admin/user", { user: req.user, targetUser });
   }
@@ -167,6 +168,8 @@ app.get("/auth/admin/users/:targetUserId", ensureAdmin, (req, res) => {
 app.post("/admin/users/:targetUserId/delete", ensureAdmin, (req, res) => {
   const { targetUserId } = req.params;
   const targetUserIndex = findUserIndex(targetUserId, users);
+ 
+  if( req.user.id !== users[targetUserIndex].id && users[targetUserIndex].role === "member"){
   if (targetUserIndex < 0) {
     return res.render("error", {
       message: "user not found",
@@ -176,9 +179,16 @@ app.post("/admin/users/:targetUserId/delete", ensureAdmin, (req, res) => {
 
   users.splice(targetUserIndex, 1);
   return res.redirect("/auth/admin/users");
+  }else{
+    return res.render("error", {
+      message: "user are not authorized to delete the count",
+      error: { status: 404 },
+    });
+  }
 });
 
-app.post("/admin/users/:targetUserId/edit", ensureAdmin, (req, res) => {
+
+app.post("/admin/users/:targetUserId/edit",  (req, res) => {
   const { email, role } = req.body;
   const { targetUserId } = req.params;
   const targetUser = users.find((user) => user.id === targetUserId);
