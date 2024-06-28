@@ -10,10 +10,8 @@ deleteForm.addEventListener('click', async () => {
             if (confirmationDelete) {
               
               window.location.href = "/auth/admin/users";
-              console.log("suprimer");
             } else {
               console.error("error of delete");
-              console.log("merci");
             }
           
   
